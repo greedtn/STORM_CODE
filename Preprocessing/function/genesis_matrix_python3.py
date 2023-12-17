@@ -17,6 +17,10 @@ import matplotlib.pyplot as plt
 
 dir_path=os.path.dirname(os.path.realpath(sys.argv[0]))
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# 現在のファイルのディレクトリパスを取得
+current_dir = os.path.dirname(__file__)
+# output_data ディレクトリへの相対パスを作成
+output_dir = os.path.join(current_dir, '..', 'output_data')
 
 land_shp_fname = shpreader.natural_earth(resolution='50m',
                                        category='physical', name='land')
@@ -151,4 +155,5 @@ def Change_genesis_locations(model):
 
             genesis_grids=create_1deg_grid(matrix_dict,basin,month)
         
-            np.save(os.path.join(__location__,'GRID_GENESIS_MATRIX_{}_{}.txt'.format(idx,month)),genesis_grids)
+            output_file_path = os.path.join(output_dir, 'GRID_GENESIS_MATRIX_{}_{}.txt'.format(idx,month))
+            np.save(output_file_path, genesis_grids)   

@@ -23,7 +23,10 @@ import os
 import sys
 dir_path=os.path.dirname(os.path.realpath(sys.argv[0]))
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
+# 現在のファイルのディレクトリパスを取得
+current_dir = os.path.dirname(__file__)
+# output_data ディレクトリへの相対パスを作成
+output_dir = os.path.join(current_dir, '..', 'output_data')
 
 def Dataframe_Genesis_Basin(idx,month):
     lat0,lat1,lon0,lon1=preprocessing.BOUNDARIES_BASINS(idx)    
@@ -159,7 +162,11 @@ def Makegrid(idx,month):
                 if mdata[i,j]>-10:
                     grid[i,j]='nan'
                      
-    np.savetxt(os.path.join(__location__,'COUNTS_GENESIS_MATRIX_'+str(idx)+'_'+str(month)+'.txt'),count_matrix)
-    np.savetxt(os.path.join(__location__,'GRID_GENESIS_MATRIX_'+str(idx)+'_'+str(month)+'.txt'),grid)
+    output_file_path = os.path.join(output_dir, 'COUNTS_GENESIS_MATRIX_'+str(idx)+'_'+str(month)+'.txt')
+    np.savetxt(output_file_path, count_matrix)   
+
+    output_file_path = os.path.join(output_dir, 'GRID_GENESIS_MATRIX_'+str(idx)+'_'+str(month)+'.txt')
+    np.savetxt(output_file_path, grid)   
+    
     return grid
    

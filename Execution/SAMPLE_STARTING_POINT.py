@@ -133,8 +133,17 @@ def Startingpoint(no_storms,monthlist,basin):
     
         
     s,monthdummy,lat0,lat1,lon0,lon1=Basins_WMO(basin)
+
+    # 現在のファイル（hoge.py）のディレクトリパスを取得
+    current_dir = os.path.dirname(__file__)
+
+    # original_data ディレクトリへの相対パスを作成
+    data_dir = os.path.join(current_dir, '..', 'original_data')
+
+    # Land_ocean_mask ファイルへのパスを作成
+    file_path = os.path.join(data_dir, 'Land_ocean_mask_' + str(basin) + '.txt')
   
-    land_mask=np.loadtxt(os.path.join(dir_path,'Land_ocean_mask_'+str(basin)+'.txt'))
+    land_mask=np.loadtxt(file_path)
 
     for month in monthlist:
         

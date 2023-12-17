@@ -20,6 +20,10 @@ import os
 import sys
 dir_path=os.path.dirname(os.path.realpath(sys.argv[0]))
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# 現在のファイルのディレクトリパスを取得
+current_dir = os.path.dirname(__file__)
+# output_data ディレクトリへの相対パスを作成
+output_dir = os.path.join(current_dir, '..', 'output_data')
 
 #Basin indices: 
 # 0 = EP = Eastern Pacific
@@ -274,15 +278,15 @@ def extract_data(data):
     Save the interpolated datasets as .npy files. These files will be used later on 
     and also come in handy when plotting IBTrACS data
     """       
-    np.save(os.path.join(dir_path,'LATLIST_INTERP.npy'),lat_int)
-    np.save(os.path.join(dir_path,'LONLIST_INTERP.npy'),lon_int)
-    np.save(os.path.join(dir_path,'TIMELIST_INTERP.npy'),timelist)
-    np.save(os.path.join(dir_path,'WINDLIST_INTERP.npy'),wind_int)
-    np.save(os.path.join(dir_path,'PRESLIST_INTERP.npy'),pres_int)
-    np.save(os.path.join(dir_path,'RMAXLIST_INTERP.npy'),rmax_int)
-    np.save(os.path.join(dir_path,'MONTHLIST_INTERP.npy'),monthlist)
-    np.save(os.path.join(dir_path,'BASINLIST_INTERP.npy'),basinlist)
-    np.save(os.path.join(dir_path,'YEARLIST_INTERP.npy'),yearlist)
+    np.save(os.path.join(output_dir,'LATLIST_INTERP.npy'),lat_int)
+    np.save(os.path.join(output_dir,'LONLIST_INTERP.npy'),lon_int)
+    np.save(os.path.join(output_dir,'TIMELIST_INTERP.npy'),timelist)
+    np.save(os.path.join(output_dir,'WINDLIST_INTERP.npy'),wind_int)
+    np.save(os.path.join(output_dir,'PRESLIST_INTERP.npy'),pres_int)
+    np.save(os.path.join(output_dir,'RMAXLIST_INTERP.npy'),rmax_int)
+    np.save(os.path.join(output_dir,'MONTHLIST_INTERP.npy'),monthlist)
+    np.save(os.path.join(output_dir,'BASINLIST_INTERP.npy'),basinlist)
+    np.save(os.path.join(output_dir,'YEARLIST_INTERP.npy'),yearlist)
 
 def TC_variables():
     """
@@ -392,14 +396,14 @@ def TC_variables():
                         radius[2].append(rmaxlist[i][j])               
      
     print(genesis_poisson)
-    np.save(os.path.join(__location__,'RMAX_PRESSURE.npy'),radius)
-    np.savetxt(os.path.join(__location__,'POISSON_GENESIS_PARAMETERS.txt'),genesis_poisson)
-    np.save(os.path.join(__location__,'TC_TRACK_VARIABLES.npy'),track)
-    np.save(os.path.join(__location__,'TC_PRESSURE_VARIABLES.npy'),pressure)
-    np.save(os.path.join(__location__,'DP0_PRES_GENESIS.npy'),genesis_pres_var)
+    np.save(os.path.join(output_dir,'RMAX_PRESSURE.npy'),radius)
+    np.savetxt(os.path.join(output_dir,'POISSON_GENESIS_PARAMETERS.txt'),genesis_poisson)
+    np.save(os.path.join(output_dir,'TC_TRACK_VARIABLES.npy'),track)
+    np.save(os.path.join(output_dir,'TC_PRESSURE_VARIABLES.npy'),pressure)
+    np.save(os.path.join(output_dir,'DP0_PRES_GENESIS.npy'),genesis_pres_var)
 
-    np.save(os.path.join(__location__,'DP_GEN.npy'),genesis_dpres)
-    np.save(os.path.join(__location__,'PRES_GEN.npy'),genesis_pressure)
-    np.save(os.path.join(__location__,'GEN_LOC.npy'),genesis_loc)      
-    np.save(os.path.join(__location__,'GENESIS_WIND.npy'),genesis_wind)    
-    np.save(os.path.join(__location__,'GENESIS_MONTHS.npy'),months)
+    np.save(os.path.join(output_dir,'DP_GEN.npy'),genesis_dpres)
+    np.save(os.path.join(output_dir,'PRES_GEN.npy'),genesis_pressure)
+    np.save(os.path.join(output_dir,'GEN_LOC.npy'),genesis_loc)      
+    np.save(os.path.join(output_dir,'GENESIS_WIND.npy'),genesis_wind)    
+    np.save(os.path.join(output_dir,'GENESIS_MONTHS.npy'),months)

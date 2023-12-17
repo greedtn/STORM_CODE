@@ -24,6 +24,10 @@ import os
 import sys
 dir_path=os.path.dirname(os.path.realpath(sys.argv[0]))
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# 現在のファイルのディレクトリパスを取得
+current_dir = os.path.dirname(__file__)
+# output_data ディレクトリへの相対パスを作成
+output_dir = os.path.join(current_dir, '..', 'output_data')
 
 def monthly_mean_pressure(data):
     """
@@ -45,8 +49,11 @@ def monthly_mean_pressure(data):
             #loop over 38 years
             mean_matrix=mean_matrix+mslp[month+t*12,:,:]/100.
             
-        mean_matrix=mean_matrix/38.                         
-        np.savetxt(os.path.join(__location__,'Monthly_mean_MSLP_'+str(month+1)+'.txt'),mean_matrix)
+        mean_matrix=mean_matrix/38.
+
+        # ファイルを保存
+        output_file_path = os.path.join(output_dir, 'Monthly_mean_MSLP_'+str(month+1)+'.txt')
+        np.savetxt(output_file_path, mean_matrix)
 
 def monthly_mean_sst(data):
     """
@@ -68,7 +75,10 @@ def monthly_mean_sst(data):
             mean_matrix=mean_matrix+sst[month+t*12,:,:]
     
         mean_matrix=mean_matrix/38.
-        np.savetxt(os.path.join(__location__,'Monthly_mean_SST_'+str(month+1)+'.txt'),mean_matrix)
+
+        # ファイルを保存
+        output_file_path = os.path.join(output_dir, 'Monthly_mean_SST_'+str(month+1)+'.txt')
+        np.savetxt(output_file_path, mean_matrix)
 
 def check_season(idx,month):
     """
@@ -180,8 +190,9 @@ def wind_pressure_relationship():
                 print('Optimal parameters not found')
             except TypeError:
                 print('Too few items')
-            
-    np.save(os.path.join(__location__,'COEFFICIENTS_WPR_PER_MONTH.npy'),coeff_list) 
+
+    output_file_path = os.path.join(output_dir, 'COEFFICIENTS_WPR_PER_MONTH.npy')
+    np.savetxt(output_file_path, coeff_list)
 
 def MPI_function(T,A,B,C):
     """
@@ -312,7 +323,9 @@ def calculate_MPI_fields():
             except TypeError:
                 print('Too few items')
                 
-    np.save(os.path.join(__location__,'COEFFICIENTS_MPI_PRESSURE_DROP_MONTH.npy'),coeflist)
+    output_file_path = os.path.join(output_dir, 'COEFFICIENTS_MPI_PRESSURE_DROP_MONTH.npy')
+    np.save(output_file_path, )
+
     # =============================================================================
     #  Calculate the new MPI in hPa         
     # =============================================================================
@@ -345,7 +358,8 @@ def calculate_MPI_fields():
             
             PC_MATRIX[PC_MATRIX<boundary]=boundary
     
-            np.savetxt(os.path.join(__location__,'MPI_FIELDS_'+str(idx)+str(m)+'.txt'),PC_MATRIX)
+            output_file_path = os.path.join(output_dir, 'MPI_FIELDS_'+str(idx)+str(m)+'.txt')
+            np.savetxt(output_file_path, PC_MATRIX)
 
 def PRESFUNCTION(X,a,b,c,d):
     """
@@ -570,4 +584,5 @@ def pressure_coefficients():
                 for j in range(0,Y):
                     coeflist[idx][m_coef].append([matrix_c0[i,j],matrix_c1[i,j],matrix_c2[i,j],matrix_c3[i,j],matrix_mean[i,j],matrix_std[i,j],matrix_mpi[i,j]])
             
-        np.save(os.path.join(__location__,'COEFFICIENTS_JM_PRESSURE.npy'),coeflist)      
+        output_file_path = os.path.join(output_dir, 'COEFFICIENTS_JM_PRESSURE.npy')
+        np.savetxt(output_file_path, coeflist)   

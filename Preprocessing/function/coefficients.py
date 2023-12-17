@@ -185,7 +185,17 @@ def track_coefficients():
         coefficients_list[idx]=coeff_array      
         print(coefficients_list[idx])
   
-    np.save(os.path.join(__location__,'TRACK_COEFFICIENTS.npy'),coefficients_list)                    
+    # 現在のファイルのディレクトリパスを取得
+    current_dir = os.path.dirname(__file__)
+
+    # output_data ディレクトリへの相対パスを作成
+    output_dir = os.path.join(current_dir, '..', 'output_data')
+
+    # TRACK_COEFFICIENTS.npy ファイルへのパスを作成
+    output_file_path = os.path.join(output_dir, 'TRACK_COEFFICIENTS.npy')
+
+    # ファイルを保存
+    np.save(output_file_path, coefficients_list)
 
 
                     

@@ -110,7 +110,16 @@ def TC_movement(lon_genesis_list,lat_genesis_list,basin):
     
     constants_all=np.load(os.path.join(__location__,'TRACK_COEFFICIENTS.npy'),allow_pickle=True,encoding='latin1').item()
     
-    land_mask=np.loadtxt(os.path.join(__location__,'Land_ocean_mask_'+str(basin)+'.txt'))
+    # 現在のファイル（hoge.py）のディレクトリパスを取得
+    current_dir = os.path.dirname(__file__)
+
+    # original_data ディレクトリへの相対パスを作成
+    data_dir = os.path.join(current_dir, '..', 'original_data')
+
+    # Land_ocean_mask ファイルへのパスを作成
+    file_path = os.path.join(data_dir, 'Land_ocean_mask_' + str(basin) + '.txt')
+  
+    land_mask=np.loadtxt(file_path)
     
     constants=constants_all[idx]
     

@@ -20,6 +20,10 @@ import os
 import sys
 dir_path=os.path.dirname(os.path.realpath(sys.argv[0]))
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# 現在のファイルのディレクトリパスを取得
+current_dir = os.path.dirname(__file__)
+# output_data ディレクトリへの相対パスを作成
+output_dir = os.path.join(current_dir, '..', 'output_data')
 
 def create_mask(lon0,lon1,lat0,lat1,stepsize):
     """
@@ -93,8 +97,10 @@ def Generate_landmask(idx):
                     ocean_mask[j,i]=mdata[i,j]
                     
     ocean_mask=np.flipud(ocean_mask)
-    np.savetxt(os.path.join(__location__,'Land_ocean_mask_'+str(name)+'.txt'),ocean_mask)
+
+    output_file_path = os.path.join(output_dir,'Land_ocean_mask_'+str(name)+'.txt')
+    np.savetxt(output_file_path, ocean_mask)   
 
 for idx in range(0,6):
     Generate_landmask(idx)
-                    
+
