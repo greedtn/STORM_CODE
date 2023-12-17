@@ -82,10 +82,15 @@ data.close()
 print("ERA5 is done")
 
 environmental.wind_pressure_relationship()
+print("wind_pressure_relationship is done")
 
 environmental.calculate_MPI_fields()
+print("calculate_MPI_fields is done")
+
 
 environmental.pressure_coefficients()
+print("pressure_coefficients is done")
+
 
 #%%
 
