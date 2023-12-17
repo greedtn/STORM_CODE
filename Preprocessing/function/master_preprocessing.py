@@ -47,6 +47,8 @@ data=xr.open_dataset(os.path.join(input_dir,'IBTrACS.since1980.v04r00.nc'), deco
 preprocessing.extract_data(data)
 data.close()
 
+print("extract_data is done")
+
 #%%
 """
 Extract the important parameters necessary for the fitting of the regression formulas (and other parts
