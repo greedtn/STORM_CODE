@@ -71,11 +71,11 @@ ECMWF has monthly mean MSLP fields available via the CDS (cds.climate.copernicus
 These should be downloaded and stored as "Monthly_mean_MSLP.nc" and "Monthly_mean_SST.nc"
 """
     
-data=xr.open_dataset(os.path.join(__location__,'Monthly_mean_MSLP.nc'))
+data=xr.open_dataset(os.path.join(input_dir,'Monthly_mean_MSLP.nc'))
 environmental.monthly_mean_pressure(data)
 data.close()
 
-data=xr.open_dataset(os.path.join(__location__,'Monthly_mean_SST.nc'))
+data=xr.open_dataset(os.path.join(input_dir,'Monthly_mean_SST.nc'))
 environmental.monthly_mean_sst(data)
 data.close()
 
