@@ -293,15 +293,15 @@ def TC_variables():
     Extract the important variables. 
     """
     try:
-        latlist=np.load(os.path.join(__location__,'LATLIST_INTERP.npy'),allow_pickle=True).item()
-        lonlist=np.load(os.path.join(__location__,'LONLIST_INTERP.npy'),allow_pickle=True).item()
-        windlist=np.load(os.path.join(__location__,'WINDLIST_INTERP.npy'),allow_pickle=True).item()
-        preslist=np.load(os.path.join(__location__,'PRESLIST_INTERP.npy'),allow_pickle=True).item()
-        rmaxlist=np.load(os.path.join(__location__,'RMAXLIST_INTERP.npy'),allow_pickle=True).item()
-        monthlist=np.load(os.path.join(__location__,'MONTHLIST_INTERP.npy'),allow_pickle=True).item()
-        basinlist=np.load(os.path.join(__location__,'BASINLIST_INTERP.npy'),allow_pickle=True).item()
+        latlist=np.load(os.path.join(output_dir,'LATLIST_INTERP.npy'),allow_pickle=True).item()
+        lonlist=np.load(os.path.join(output_dir,'LONLIST_INTERP.npy'),allow_pickle=True).item()
+        windlist=np.load(os.path.join(output_dir,'WINDLIST_INTERP.npy'),allow_pickle=True).item()
+        preslist=np.load(os.path.join(output_dir,'PRESLIST_INTERP.npy'),allow_pickle=True).item()
+        rmaxlist=np.load(os.path.join(output_dir,'RMAXLIST_INTERP.npy'),allow_pickle=True).item()
+        monthlist=np.load(os.path.join(output_dir,'MONTHLIST_INTERP.npy'),allow_pickle=True).item()
+        basinlist=np.load(os.path.join(output_dir,'BASINLIST_INTERP.npy'),allow_pickle=True).item()
     except FileNotFoundError:
-        print('Files do not exist in '+str(__location__)+', please check directory')
+        print('Files do not exist in '+str(output_dir)+', please check directory')
         return 
     
     monthsall=[[6,7,8,9,10,11],[6,7,8,9,10,11],[4,5,6,9,10,11],[1,2,3,4,11,12],[1,2,3,4,11,12],[5,6,7,8,9,10,11]]
@@ -395,7 +395,7 @@ def TC_variables():
                     elif preslist[i][j]>960.:
                         radius[2].append(rmaxlist[i][j])               
      
-    print(genesis_poisson)
+    print("各流域のポアソン分布の係数：", genesis_poisson)
     np.save(os.path.join(output_dir,'RMAX_PRESSURE.npy'),radius)
     np.savetxt(os.path.join(output_dir,'POISSON_GENESIS_PARAMETERS.txt'),genesis_poisson)
     np.save(os.path.join(output_dir,'TC_TRACK_VARIABLES.npy'),track)
