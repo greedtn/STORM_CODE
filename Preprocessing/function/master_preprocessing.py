@@ -23,7 +23,8 @@ import xarray as xr
 import preprocessing
 import coefficients
 import environmental
-import genesis_matrix
+# import genesis_matrix
+import genesis_matrix_python3  # python3対応のこちらに変更
 import os
 import sys
 dir_path=os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -82,7 +83,13 @@ environmental.pressure_coefficients()
 
 #%%
 
+"""
+以下、Python2用のコードなので、コメントアウト
 monthsall=[[6,7,8,9,10,11],[6,7,8,9,10,11],[4,5,6,9,10,11],[1,2,3,4,11,12],[1,2,3,4,11,12],[5,6,7,8,9,10,11]]
 for basin_index in range(0,6):
     for month in monthsall[basin_index]:
         genesis_matrix.Makegrid(basin_index,month)
+"""
+
+
+genesis_matrix_python3.Change_genesis_locations()
