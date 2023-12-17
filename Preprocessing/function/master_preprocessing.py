@@ -28,6 +28,12 @@ import os
 import sys
 dir_path=os.path.dirname(os.path.realpath(sys.argv[0]))
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# 現在のファイルのディレクトリパスを取得
+current_dir = os.path.dirname(__file__)
+# output_data ディレクトリへの相対パスを作成
+output_dir = os.path.join(current_dir, '..', 'output_data')
+# input_data ディレクトリへの相対パスを作成
+input_dir = os.path.join(current_dir, '..', 'input_data')
 
 #%%
 """
@@ -36,7 +42,7 @@ or ftp://eclipse.ncdc.noaa.gov/pub/ibtracs/v04r00/provisional/netcdf/
 Here, we use the global dataset (version 4) from 1980-2017.
 """
 
-data=xr.open_dataset(os.path.join(__location__,'IBTrACS.since1980.v04r00.nc'),decode_times=False)
+data=xr.open_dataset(os.path.join(input_dir,'IBTrACS.since1980.v04r00.nc'), decode_times=False)
 preprocessing.extract_data(data)
 data.close()
 
