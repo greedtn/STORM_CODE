@@ -156,7 +156,7 @@ def wind_pressure_relationship():
             idx=basinlist[i][0]
             month=monthlist[i][0]            
             check=check_season(idx,month) 
-            print(idx,month,check)
+            # print(idx,month,check)
             if check==1:
                 MSLP=np.loadtxt(os.path.join(output_dir,'Monthly_mean_MSLP_'+str(month)+'.txt'))                
                 for j in range(0,len(latlist[i])):
@@ -194,7 +194,7 @@ def wind_pressure_relationship():
                 print('Too few items')
 
     output_file_path = os.path.join(output_dir, 'COEFFICIENTS_WPR_PER_MONTH.npy')
-    np.savetxt(output_file_path, coeff_list)
+    np.save(output_file_path, coeff_list)
 
 def MPI_function(T,A,B,C):
     """
@@ -290,7 +290,7 @@ def calculate_MPI_fields():
         for i in range(len(months[idx])):
             m=months_for_coef[idx][i]
             mc=months[idx][i]
-            print(idx,mc)
+            # print(idx,mc)
             if idx==2 and m<7.:
                 df1=df[(df["Month"]==4) | (df["Month"]==5) | (df["Month"]==6)]
             
@@ -414,6 +414,7 @@ def pressure_coefficients():
     months_for_coef=[[6,7,8,9,10,11],[6,7,8,9,10,11],[4,5,6,9,10,11],[1,2,3,4,11,12],[1,2,3,4,11,12],[5,6,7,8,9,10,11]]
         
     for idx in range(0,6):
+        print(idx, "開始")
         coeflist[idx]={i:[] for i in months_for_coef[idx]}
         
         lat0,lat1,lon0,lon11=preprocessing.BOUNDARIES_BASINS(idx) 
@@ -423,7 +424,7 @@ def pressure_coefficients():
         
         for i in range(len(months[idx])):
             m=months[idx][i]
-            print(idx,m)
+            # print(idx,m)  
             
             m_coef=months_for_coef[idx][i]
     
@@ -580,7 +581,7 @@ def pressure_coefficients():
                                 shadowmatrix[i,j]=1                     
                                 break
         
-            print(np.mean(matrix_c0),np.mean(matrix_c1),np.mean(matrix_c2),np.mean(matrix_c3))
+            # print(np.mean(matrix_c0),np.mean(matrix_c1),np.mean(matrix_c2),np.mean(matrix_c3))
                      
             for i in range(0,X):
                 for j in range(0,Y):
