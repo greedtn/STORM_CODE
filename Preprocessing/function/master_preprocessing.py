@@ -55,12 +55,14 @@ Extract the important parameters necessary for the fitting of the regression for
 of the storm model
 """
 preprocessing.TC_variables()
+print("TC_variables is done")
  
 #%%
 """
 Calculate the coefficients for the track and pressure regression formulas
 """
 coefficients.track_coefficients()
+print("track_coefficients is done")
 
 #%%
 """
@@ -76,6 +78,8 @@ data.close()
 data=xr.open_dataset(os.path.join(__location__,'Monthly_mean_SST.nc'))
 environmental.monthly_mean_sst(data)
 data.close()
+
+print("ERA5 is done")
 
 environmental.wind_pressure_relationship()
 

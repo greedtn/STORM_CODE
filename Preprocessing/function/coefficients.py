@@ -23,6 +23,10 @@ import os
 import sys
 dir_path=os.path.dirname(os.path.realpath(sys.argv[0]))
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# 現在のファイルのディレクトリパスを取得
+current_dir = os.path.dirname(__file__)
+# output_data ディレクトリへの相対パスを作成
+output_dir = os.path.join(current_dir, '..', 'output_data')
 
 
 def LATFUNCTION(X,a,b,c):
@@ -91,8 +95,11 @@ def track_coefficients():
     per 5 deg bin for every basin. 
     """
     step=5.
-           
-    data=np.load(os.path.join(__location__,'TC_TRACK_VARIABLES.npy'),allow_pickle=True).item()
+    # 現在のファイルのディレクトリパスを取得
+    current_dir = os.path.dirname(__file__)
+    # output_data ディレクトリへの相対パスを作成
+    output_dir = os.path.join(current_dir, '..', 'output_data')
+    data=np.load(os.path.join(output_dir,'TC_TRACK_VARIABLES.npy'),allow_pickle=True).item()
     
     coefficients_list={i:[] for i in range(0,6)}
     
