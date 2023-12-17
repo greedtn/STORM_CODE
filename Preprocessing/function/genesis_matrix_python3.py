@@ -147,7 +147,7 @@ def create_1deg_grid(delta_count_matrix,basin,month):
 
 def Change_genesis_locations(model):
     monthsall={'EP':[6,7,8,9,10,11],'NA':[6,7,8,9,10,11],'NI':[4,5,6,9,10,11],'SI':[1,2,3,4,11,12],'SP':[1,2,3,4,11,12],'WP':[5,6,7,8,9,10,11]}    
-    locations=np.load(os.path.join(__location__,'GEN_LOC.npy'),allow_pickle=True,encoding='latin1').item()
+    locations=np.load(os.path.join(output_dir,'GEN_LOC.npy'),allow_pickle=True,encoding='latin1').item()
 
     for basin,idx in zip(['EP','NA','NI','SI','SP','WP'],range(0,6)):
         for month in monthsall[basin]:                

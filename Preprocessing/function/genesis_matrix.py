@@ -31,7 +31,7 @@ output_dir = os.path.join(current_dir, '..', 'output_data')
 def Dataframe_Genesis_Basin(idx,month):
     lat0,lat1,lon0,lon1=preprocessing.BOUNDARIES_BASINS(idx)    
     
-    genesis=np.load(os.path.join(__location__,'GEN_LOC.npy'),allow_pickle=True).item() 
+    genesis=np.load(os.path.join(output_dir,'GEN_LOC.npy'),allow_pickle=True).item() 
     
     lat_init_list=[genesis[idx][month][i][0] for i in range(len(genesis[idx][month]))]    
     lon_init_list=[genesis[idx][month][i][1] for i in range(len(genesis[idx][month]))]

@@ -158,7 +158,7 @@ def wind_pressure_relationship():
             check=check_season(idx,month) 
             print(idx,month,check)
             if check==1:
-                MSLP=np.loadtxt(os.path.join(__location__,'Monthly_mean_MSLP_'+str(month)+'.txt'))                
+                MSLP=np.loadtxt(os.path.join(output_dir,'Monthly_mean_MSLP_'+str(month)+'.txt'))                
                 for j in range(0,len(latlist[i])):
                     #Wind needs to be greater than 15 kt.                         
                         latn=np.abs(lat-latlist[i][j]).argmin()
@@ -251,8 +251,8 @@ def calculate_MPI_fields():
     SST_field_all={i:[] for i in range(1,13)}
     
     for month in range(1,13):
-        MSLP_field_all[month]=np.loadtxt(os.path.join(__location__,'Monthly_mean_MSLP_'+str(month)+'.txt'))
-        SST_field_all[month]=np.loadtxt(os.path.join(__location__,'Monthly_mean_SST_'+str(month)+'.txt'))
+        MSLP_field_all[month]=np.loadtxt(os.path.join(output_dir,'Monthly_mean_MSLP_'+str(month)+'.txt'))
+        SST_field_all[month]=np.loadtxt(os.path.join(output_dir,'Monthly_mean_SST_'+str(month)+'.txt'))
     
     for i in range(len(latlist)):
         if len(preslist[i])>0:
@@ -399,13 +399,13 @@ def pressure_coefficients():
     """
     Calculate the pressure coefficients
     """
-    data=xr.open_dataset(os.path.join(__location__,'Monthly_mean_SST.nc'))
+    data=xr.open_dataset(os.path.join(output_dir,'Monthly_mean_SST.nc'))
     
     lon=data.longitude.values
     lat=data.latitude.values
     data.close()
     step=5
-    pres_variables=np.load(os.path.join(__location__,'TC_PRESSURE_VARIABLES.npy'),allow_pickle=True).item()
+    pres_variables=np.load(os.path.join(output_dir,'TC_PRESSURE_VARIABLES.npy'),allow_pickle=True).item()
 
     coeflist={i:[] for i in range(0,6)}
     
@@ -427,7 +427,7 @@ def pressure_coefficients():
             
             m_coef=months_for_coef[idx][i]
     
-            MPI_MATRIX=np.loadtxt(os.path.join(__location__,'MPI_FIELDS_'+str(idx)+str(m)+'.txt'))
+            MPI_MATRIX=np.loadtxt(os.path.join(output_dir,'MPI_FIELDS_'+str(idx)+str(m)+'.txt'))
         
             lat_df,lon_df,mpi_df=[],[],[]
             
