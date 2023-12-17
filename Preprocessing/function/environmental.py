@@ -28,6 +28,8 @@ __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file
 current_dir = os.path.dirname(__file__)
 # output_data ディレクトリへの相対パスを作成
 output_dir = os.path.join(current_dir, '..', 'output_data')
+# input_data ディレクトリへの相対パスを作成
+input_dir = os.path.join(current_dir, '..', 'input_data')
 
 def monthly_mean_pressure(data):
     """
@@ -132,14 +134,14 @@ def wind_pressure_relationship():
 
     This script saves the coefficients list for the wind-pressure relationship, per month as an npy-file.
     """
-    latlist=np.load(os.path.join(__location__,'LATLIST_INTERP.npy'),allow_pickle=True).item()
-    lonlist=np.load(os.path.join(__location__,'LONLIST_INTERP.npy'),allow_pickle=True).item()
-    windlist=np.load(os.path.join(__location__,'WINDLIST_INTERP.npy'),allow_pickle=True).item()
-    preslist=np.load(os.path.join(__location__,'PRESLIST_INTERP.npy'),allow_pickle=True).item()
-    monthlist=np.load(os.path.join(__location__,'MONTHLIST_INTERP.npy'),allow_pickle=True).item()
-    basinlist=np.load(os.path.join(__location__,'BASINLIST_INTERP.npy'),allow_pickle=True).item()
+    latlist=np.load(os.path.join(output_dir,'LATLIST_INTERP.npy'),allow_pickle=True).item()
+    lonlist=np.load(os.path.join(output_dir,'LONLIST_INTERP.npy'),allow_pickle=True).item()
+    windlist=np.load(os.path.join(output_dir,'WINDLIST_INTERP.npy'),allow_pickle=True).item()
+    preslist=np.load(os.path.join(output_dir,'PRESLIST_INTERP.npy'),allow_pickle=True).item()
+    monthlist=np.load(os.path.join(output_dir,'MONTHLIST_INTERP.npy'),allow_pickle=True).item()
+    basinlist=np.load(os.path.join(output_dir,'BASINLIST_INTERP.npy'),allow_pickle=True).item()
 
-    data=xr.open_dataset(os.path.join(__location__,'Monthly_mean_SST.nc'))
+    data=xr.open_dataset(os.path.join(input_dir,'Monthly_mean_SST.nc'))
     
     lon=data.longitude.values
     lat=data.latitude.values
@@ -229,16 +231,16 @@ def calculate_MPI_fields():
     # =============================================================================
     # Calculate the MPI and SST - NOTE: THIS PART TAKES VERY LOOONG
     # =============================================================================
-    data=xr.open_dataset(os.path.join(__location__,'Monthly_mean_SST.nc'))
+    data=xr.open_dataset(os.path.join(input_dir,'Monthly_mean_SST.nc'))
      
     lon=data.longitude.values
     lat=data.latitude.values
     data.close()
-    latlist=np.load(os.path.join(__location__,'LATLIST_INTERP.npy')).item()
-    lonlist=np.load(os.path.join(__location__,'LONLIST_INTERP.npy')).item()
-    monthlist=np.load(os.path.join(__location__,'MONTHLIST_INTERP.npy')).item()
-    basinlist=np.load(os.path.join(__location__,'BASINLIST_INTERP.npy')).item()
-    preslist=np.load(os.path.join(__location__,'PRESLIST_INTERP.npy')).item()
+    latlist=np.load(os.path.join(output_dir,'LATLIST_INTERP.npy')).item()
+    lonlist=np.load(os.path.join(output_dir,'LONLIST_INTERP.npy')).item()
+    monthlist=np.load(os.path.join(output_dir,'MONTHLIST_INTERP.npy')).item()
+    basinlist=np.load(os.path.join(output_dir,'BASINLIST_INTERP.npy')).item()
+    preslist=np.load(os.path.join(output_dir,'PRESLIST_INTERP.npy')).item()
 
     sst_list={i:[] for i in range(0,6)}
     month_list={i:[] for i in range(0,6)}
