@@ -133,6 +133,8 @@ def wind_pressure_relationship():
     Adapted by e.g. Atkinson and Holliday (1977), Love and Murphy (1985) and Crane (1985)
 
     This script saves the coefficients list for the wind-pressure relationship, per month as an npy-file.
+
+    要約：風速と気圧の関係の係数を算出する
     """
     latlist=np.load(os.path.join(output_dir,'LATLIST_INTERP.npy'),allow_pickle=True).item()
     lonlist=np.load(os.path.join(output_dir,'LONLIST_INTERP.npy'),allow_pickle=True).item()
@@ -150,8 +152,11 @@ def wind_pressure_relationship():
     pres_basin={i:[] for i in range(0,6)}
     wind_basin={i:[] for i in range(0,6)}
     month_basin={i:[] for i in range(0,6)}
-    
+    total = len(latlist)  # 総回数
+    increment = total // 10  # 進捗を表示するための増分（10%）
     for i in range(len(latlist)):
+        if i % increment == 0 and i != 0:  # 10%ごとに進捗を表示（最初の0%は除く）
+            print(f"Progress: {int((i / total) * 100)}% complete")
         if len(latlist[i])>0:            
             idx=basinlist[i][0]
             month=monthlist[i][0]            
@@ -167,11 +172,14 @@ def wind_pressure_relationship():
                             pres_basin[idx].append(MSLP[latn][lonn]-preslist[i][j])
                             wind_basin[idx].append(windlist[i][j])
                             month_basin[idx].append(month)
+    # ループ終了時に100%完了を表示
+    print("Progress: 100% complete")
       
-    coeff_list={i:[] for i in range(0,6)}    
+    coeff_list={i:[] for i in range(0,6)}
     months=[[6,7,8,9,10,11],[6,7,8,9,10,11],[4,5,6,9,10,11],[1,2,3,4,11,12],[1,2,3,4,11,12],[5,6,7,8,9,10,11]]
     
-    for idx in range(0,6):        
+    for idx in range(0,6):
+        print("IDX=", idx, "開始")
         coeff_list[idx]={i:[] for i in months[idx]}    
         df=pd.DataFrame({"Wind":wind_basin[idx],"Pressure":pres_basin[idx],"Month":month_basin[idx]})        
         for i in range(len(months[idx])):

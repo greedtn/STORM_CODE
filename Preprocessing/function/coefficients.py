@@ -190,7 +190,7 @@ def track_coefficients():
                             count=count+1        
     
         coefficients_list[idx]=coeff_array      
-        print(coefficients_list[idx])
+        # print(coefficients_list[idx])
   
     # 現在のファイルのディレクトリパスを取得
     current_dir = os.path.dirname(__file__)
