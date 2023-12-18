@@ -343,7 +343,7 @@ def calculate_MPI_fields():
                 print('Too few items')
                 
     output_file_path = os.path.join(output_dir, 'COEFFICIENTS_MPI_PRESSURE_DROP_MONTH.npy')
-    np.save(output_file_path, )
+    np.save(output_file_path, coeflist)
 
     # =============================================================================
     #  Calculate the new MPI in hPa         
@@ -417,7 +417,7 @@ def pressure_coefficients():
     """
     Calculate the pressure coefficients
     """
-    data=xr.open_dataset(os.path.join(output_dir,'Monthly_mean_SST.nc'))
+    data=xr.open_dataset(os.path.join(input_dir,'Monthly_mean_SST.nc'))
     
     lon=data.longitude.values
     lat=data.latitude.values
