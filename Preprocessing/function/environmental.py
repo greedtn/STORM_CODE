@@ -234,7 +234,7 @@ def Calculate_P(V,Penv,a,b):
     Pc=Penv-(V/a)**(1./b)  
     return Pc
 
-def calculate_MPI_fields():  
+def calculate_MPI_fields():
     """
     Calculate the MPI fields from the pressure drop and environmental conditions.
     """
@@ -264,7 +264,11 @@ def calculate_MPI_fields():
         MSLP_field_all[month]=np.loadtxt(os.path.join(output_dir,'Monthly_mean_MSLP_'+str(month)+'.txt'))
         SST_field_all[month]=np.loadtxt(os.path.join(output_dir,'Monthly_mean_SST_'+str(month)+'.txt'))
     
+    total = len(latlist)  # 総回数
+    increment = total // 10  # 進捗を表示するための増分（10%）
     for i in range(len(latlist)):
+        if i % increment == 0 and i != 0:  # 10%ごとに進捗を表示（最初の0%は除く）
+            print(f"Progress: {int((i / total) * 100)}% complete")
         if len(preslist[i])>0:
             idx=basinlist[i][0]
             month=monthlist[i][0]
@@ -281,6 +285,9 @@ def calculate_MPI_fields():
                     intensity_list[idx].append(preslist[i][j])
                     pressure_drop_list[idx].append(MSLP_field[lat_index,lon_index]-preslist[i][j])
                     month_list[idx].append(month)
+    # ループ終了時に100%完了を表示
+    print("Progress: 100% complete")
+
     #=============================================================================
     #Calculate the MPI coefficients (see DeMaria & Kaplan 1994)
     #=============================================================================
@@ -290,7 +297,7 @@ def calculate_MPI_fields():
     months=[[6,7,8,9,10,11],[6,7,8,9,10,11],[4,5,6,9,10,11],[1,2,3,4,11,12],[1,2,3,4,11,12],[5,6,7,8,9,10,11]]
     months_for_coef=[[6,7,8,9,10,10],[6,7,8,9,10,11],[6,6,6,10,10,11],[1,2,3,4,11,12],[1,2,3,4,11,12],[5,6,7,8,9,10,11]]
     for idx in range(0,6):
-        
+        print("IDX=", idx, "開始")
         coeflist[idx]={i:[] for i in months[idx]}
         
         df=pd.DataFrame({'Drop':pressure_drop_list[idx],'SST':sst_list[idx],'Month':month_list[idx]})
@@ -346,6 +353,7 @@ def calculate_MPI_fields():
     mpi_bounds=[[860,880,900,900,880,860],[920,900,900,900,880,880],[840,860,880,900,880,860],[840,880,860,860,840,860],[840,840,860,860,840,840],[860,860,860,870,870,860,860]]
     
     for idx in range(0,6):
+        print("IDX=", idx, "開始")
         for m,midx in zip(months[idx],range(len(months[idx]))):
             [A,B,C]=coeflist[idx][m]    
         
