@@ -184,10 +184,12 @@ def wind_pressure_relationship():
         df=pd.DataFrame({"Wind":wind_basin[idx],"Pressure":pres_basin[idx],"Month":month_basin[idx]})        
         for i in range(len(months[idx])):
             m=months[idx][i]
-            df1=df[(df["Month"]==m)]    
+            # df1=df[(df["Month"]==m)]    
+            df1 = df[df['Month'] == m].copy()  # スライスのコピーを作成
             step=2. #Group in 2 m/s bins to eliminate the effect of more weaker storms (that might skew the fit)
             to_bin=lambda x:np.floor(x/step)*step            
-            df1["windbin"]=df1.Wind.map(to_bin)                
+            # df1["windbin"]=df1.Wind.map(to_bin)            
+            df1.loc[:, 'windbin'] = df1['Wind'].map(to_bin)    
             minpres=df1.groupby(["windbin"]).agg({"Pressure":"mean"})["Pressure"]   
             maxwind=np.unique(df1["windbin"])  
             
