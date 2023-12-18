@@ -246,11 +246,11 @@ def calculate_MPI_fields():
     lon=data.longitude.values
     lat=data.latitude.values
     data.close()
-    latlist=np.load(os.path.join(output_dir,'LATLIST_INTERP.npy')).item()
-    lonlist=np.load(os.path.join(output_dir,'LONLIST_INTERP.npy')).item()
-    monthlist=np.load(os.path.join(output_dir,'MONTHLIST_INTERP.npy')).item()
-    basinlist=np.load(os.path.join(output_dir,'BASINLIST_INTERP.npy')).item()
-    preslist=np.load(os.path.join(output_dir,'PRESLIST_INTERP.npy')).item()
+    latlist=np.load(os.path.join(output_dir,'LATLIST_INTERP.npy'), allow_pickle=True).item()
+    lonlist=np.load(os.path.join(output_dir,'LONLIST_INTERP.npy'), allow_pickle=True).item()
+    monthlist=np.load(os.path.join(output_dir,'MONTHLIST_INTERP.npy'), allow_pickle=True).item()
+    basinlist=np.load(os.path.join(output_dir,'BASINLIST_INTERP.npy'), allow_pickle=True).item()
+    preslist=np.load(os.path.join(output_dir,'PRESLIST_INTERP.npy'), allow_pickle=True).item()
 
     sst_list={i:[] for i in range(0,6)}
     month_list={i:[] for i in range(0,6)}
