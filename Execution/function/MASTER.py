@@ -41,7 +41,7 @@ start_time=time.time()
 basin='EP'
 loop=0 #ranges between 0 and 9 to simulate slices of 1000 years
 
-total_years=10 #set the total number of years you'd like to simulate
+total_years=100 #set the total number of years you'd like to simulate
 
 TC_data=[] #This list is composed of: [year,storm number,lat,lon,pressure,wind,rmax,category,Holland B parameter,precipitation,landfall flag]
 #==============================================================================
