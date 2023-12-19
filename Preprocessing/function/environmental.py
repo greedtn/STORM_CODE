@@ -487,7 +487,8 @@ def pressure_coefficients():
             df_data=df_data[(df_data['Pressure']>0.) & (df_data['DP0']>-10000.) & (df_data['DP1']>-10000.) & (df_data['Longitude']>=lon0) &(df_data['Longitude']<lon11) & (df_data["Latitude"]>=lat0) & (df_data["Latitude"]<lat1)]
             df_data1=df_data[df_data["Month"]==m]
             
-            df_data1["latbin"]=df_data1.Latitude.map(to_bin)
+            df_data1 = df_data1.copy()
+            df_data1["latbin"] = df_data1.Latitude.map(to_bin)
             df_data1["lonbin"]=df_data1.Longitude.map(to_bin)    
         
             latbins=np.unique(df_data1["latbin"])
