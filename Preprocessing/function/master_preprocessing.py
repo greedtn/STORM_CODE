@@ -102,6 +102,8 @@ for basin_index in range(0,6):
         genesis_matrix.Makegrid(basin_index,month)
 """
 
+# 以下、環境構築が困難だったため、GoogleColabで実装
+# https://colab.research.google.com/drive/1GUZYGUIWXLSF2ZbQdxN5-BfP7BR62KGU?usp=sharing
 
-genesis_matrix_python3.Change_genesis_locations()
+# genesis_matrix_python3.Change_genesis_locations()
 print("Change_genesis_locations is done")
