@@ -470,7 +470,15 @@ def pressure_coefficients():
                 for lonidx in lonbins1:
                     i_ind=int((latidx-lat0)/5.)
                     j_ind=int((lonidx-lon0)/5.)
-                    matrix_mpi[i_ind,j_ind]=np.nanmin(MPI[latidx][lonidx])
+                    # matrix_mpi[i_ind,j_ind]=np.nanmin(MPI[latidx][lonidx])
+                    # MPI[latidx][lonidx] の部分が全てNaN値かどうかをチェック
+                    if np.all(np.isnan(MPI[latidx][lonidx])):
+                        # 全てNaNの場合、matrix_mpiにデフォルト値を設定
+                        matrix_mpi[i_ind, j_ind] = np.nan  # または適切な他の値
+                    else:
+                        # そうでない場合、最小値を計算して設定
+                        matrix_mpi[i_ind, j_ind] = np.nanmin(MPI[latidx][lonidx])
+
                     
             if idx==1:
                 matrix_mpi=np.c_[matrix_mpi,matrix_mpi[:,-1]]        
@@ -606,4 +614,4 @@ def pressure_coefficients():
                     coeflist[idx][m_coef].append([matrix_c0[i,j],matrix_c1[i,j],matrix_c2[i,j],matrix_c3[i,j],matrix_mean[i,j],matrix_std[i,j],matrix_mpi[i,j]])
             
         output_file_path = os.path.join(output_dir, 'COEFFICIENTS_JM_PRESSURE.npy')
-        np.savetxt(output_file_path, coeflist)   
+        np.save(output_file_path, coeflist)
