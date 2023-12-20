@@ -423,31 +423,50 @@ def pressure_coefficients():
     lat=data.latitude.values
     data.close()
     step=5
+
+    # 気圧関係の変数が格納されている
+    # [0]: DP0, [1]: DP1, [2]:pressure, [3]:Lat, [4]: Lon, [5]:Month
     pres_variables=np.load(os.path.join(output_dir,'TC_PRESSURE_VARIABLES.npy'),allow_pickle=True).item()
 
     coeflist={i:[] for i in range(0,6)}
+    # 流域別の誤差リスト
+    Epsilonlist = {i:[] for i in range(0,6)}
+    # 流域別の気圧リスト
+    Pressurelist = {i:[] for i in range(0,6)}
+    #  流域別のΔPt（IBT）
+    IBT_deltaPt = {i:[] for i in range(0,6)}
+    #  流域別のΔPt（STORM）
+    STORM_deltaPt = {i:[] for i in range(0,6)}
+
     
     months=[[6,7,8,9,10,11],[6,7,8,9,10,11],[4,5,6,10,10,11],[1,2,3,4,11,12],[1,2,3,4,11,12],[5,6,7,8,9,10,11]]
     
     months_for_coef=[[6,7,8,9,10,11],[6,7,8,9,10,11],[4,5,6,9,10,11],[1,2,3,4,11,12],[1,2,3,4,11,12],[5,6,7,8,9,10,11]]
         
-    for idx in range(0,6):
+    for idx in range(0,6):  # 流域ごとに計算
         print(idx, "開始")
-        coeflist[idx]={i:[] for i in months_for_coef[idx]}
+        # 各流域で、各月ごとに係数を計算していく
+        coeflist[idx]={i:[] for i in months_for_coef[idx]}  
         
-        lat0,lat1,lon0,lon11=preprocessing.BOUNDARIES_BASINS(idx) 
+        # 各流域の緯度経度の最小値、最大値を算出
+        lat0,lat1,lon0,lon11=preprocessing.BOUNDARIES_BASINS(idx)  
         
+        # 
         lat_0=np.abs(lat-lat1).argmin()
         lon_0=np.abs(lon-lon0).argmin()
         
+        # 各流域の該当月ごとに計算（WPの場合だと、5~11月）
         for i in range(len(months[idx])):
+            # 月を代入
             m=months[idx][i]
-            # print(idx,m)  
             
+            #  月を代入（mと同じことをしている）
             m_coef=months_for_coef[idx][i]
-    
+
+            # 各流域、各月のMPIの値をロード
             MPI_MATRIX=np.loadtxt(os.path.join(output_dir,'MPI_FIELDS_'+str(idx)+str(m)+'.txt'))
-        
+
+            # dfの作成
             lat_df,lon_df,mpi_df=[],[],[]
             
             for i in range(len(MPI_MATRIX[:,0])):
@@ -455,17 +474,24 @@ def pressure_coefficients():
                     lat_df.append(lat[i+lat_0])
                     lon_df.append(lon[j+lon_0])
                     mpi_df.append(MPI_MATRIX[i,j])
-                               
+            
+            # 各緯度、経度のMPIをデータフレーム化
             df=pd.DataFrame({'Latitude':lat_df,'Longitude':lon_df,'MPI':mpi_df})
+            # ビン化（5度ずつに分割）
             to_bin=lambda x:np.floor(x/step)*step
             df["latbin"]=df.Latitude.map(to_bin)
             df["lonbin"]=df.Longitude.map(to_bin)
+            # 緯度経度5度5度ずつで、MPIのリストを格納
             MPI=df.groupby(["latbin","lonbin"])['MPI'].apply(list)  
             
+            # 緯度経度の最小値〜最大値を5度刻みで分割
             latbins1=np.linspace(lat0,lat1-5,(lat1-5-lat0)//step+1)
             lonbins1=np.linspace(lon0,lon11-5,(lon11-5-lon0)//step+1)
-            
+
+            # 緯度のidx数 x 経度のidx数の2次元配列を準備
             matrix_mpi=-100*np.ones((int((lat1-lat0)/5),int((lon11-lon0)/5)))
+
+            # 緯度、経度ごとに計算
             for latidx in latbins1:
                 for lonidx in lonbins1:
                     i_ind=int((latidx-lat0)/5.)
@@ -479,18 +505,24 @@ def pressure_coefficients():
                         # そうでない場合、最小値を計算して設定
                         matrix_mpi[i_ind, j_ind] = np.nanmin(MPI[latidx][lonidx])
 
-                    
+            
+            # 恐らく不要
             if idx==1:
                 matrix_mpi=np.c_[matrix_mpi,matrix_mpi[:,-1]]        
                     
+            # 気圧関連のデータをデータフレーム化
             df_data=pd.DataFrame({'Latitude':pres_variables[3][idx],'Longitude':pres_variables[4][idx],'Pressure':pres_variables[2][idx],'DP0':pres_variables[0][idx],'DP1':pres_variables[1][idx],'Month':pres_variables[5][idx]})
+            # 外れ値の除去＆流域内のデータだけ取り出す
             df_data=df_data[(df_data['Pressure']>0.) & (df_data['DP0']>-10000.) & (df_data['DP1']>-10000.) & (df_data['Longitude']>=lon0) &(df_data['Longitude']<lon11) & (df_data["Latitude"]>=lat0) & (df_data["Latitude"]<lat1)]
+            # 該当月のデータのみ中sy通
             df_data1=df_data[df_data["Month"]==m]
             
             df_data1 = df_data1.copy()
+            # 緯度経度を5度5度ででビン化
             df_data1["latbin"] = df_data1.Latitude.map(to_bin)
             df_data1["lonbin"]=df_data1.Longitude.map(to_bin)    
-        
+
+            # 緯度経度を5度5度にグループ化して、グループ内の各変数をリスト化する
             latbins=np.unique(df_data1["latbin"])
             lonbins=df_data1.groupby("latbin")["lonbin"].apply(list)
             Pressure=df_data1.groupby(["latbin","lonbin"])["Pressure"].apply(list)
@@ -502,6 +534,7 @@ def pressure_coefficients():
             else:
                 lon1=lon11
         
+            # 特定の流域の、特的の月の誤差の平均値、標準編、c0~c3を格納する場所を作成
             matrix_mean=-100*np.ones((int((lat1-lat0)/5),int((lon1-lon0)/5)))
             matrix_std=-100*np.ones((int((lat1-lat0)/5),int((lon1-lon0)/5)))
             matrix_c0=-100*np.ones((int((lat1-lat0)/5),int((lon1-lon0)/5)))
@@ -510,12 +543,15 @@ def pressure_coefficients():
             matrix_c3=-100*np.ones((int((lat1-lat0)/5),int((lon1-lon0)/5)))
         
             count=0
+
+            # 緯度経度のグループごとの、ユニークペアを格納
             lijst=[]
             for latidx in latbins:
                 lonlist=np.unique(lonbins[latidx])
                 for lonidx in lonlist:
                     lijst.append((latidx,lonidx))
-                    
+            
+            
             for latidx in latbins:
                 lonlist=np.unique(lonbins[latidx])
                 for lonidx in lonlist:            
@@ -539,20 +575,42 @@ def pressure_coefficients():
                     if len(preslist)>9.:
                         presmpi_list=[]
                         for y in range(len(preslist)):
+                            # X = max{0, Pt - MPI}
                             if preslist[y]<mpi[y]:
                                 presmpi_list.append(0)
                             else:
                                 presmpi_list.append(preslist[y]-mpi[y])
-                                
+                        
+                        # dp0list=ΔPt-1, dp1list=ΔPt, presmpi_list=Pt-MPI
                         X=[dp0list,presmpi_list]
                         try:
+                            # 係数を算出（dp1listに近い値を取るように、c0~c3を最適化）
                             opt,l=curve_fit(PRESFUNCTION,X,dp1list,p0=[0,0,0,0],maxfev=5000)
                             [c0,c1,c2,c3]=opt
-                            expected=PRESEXPECTED(dp1list,presmpi_list,c0,c1,c2,c3)
+
+                            # Calculate the forward change in pressure (dp1, p[i+1]-p[i])
+                            # dp1ではなく、dp0を渡すべきでは？
+                            # expected=PRESEXPECTED(dp1list,presmpi_list,c0,c1,c2,c3)
+                            expected=PRESEXPECTED(dp0list,presmpi_list,c0,c1,c2,c3)
+
+                            # Epsilonを入れるリスト
                             Epres=[]
                             for ind in range(len(expected)):
-                                Epres.append(expected[ind]-dp0list[ind])
-                                
+                                # ここはexpected[ind] - dp1list[ind] では？なぜdp"0"?
+                                # Epres.append(expected[ind]-dp0list[ind])
+                                # IBTrACSのΔPt= ΔPt + Epsilonなので、Epsilon = IBTrACSのΔPT（dp1list） - ΔPt（expected）を計算するべき
+                                Epres.append(dp1list[ind]-expected[ind])  # この値は、Epsilonに何をいれれば、IBTrACSの値が再現できるかを示す
+                                # 流域別の誤差リスト
+                                Epsilonlist[idx].append(dp1list[ind]-expected[ind])
+                                # 流域別の気圧リスト
+                                Pressurelist[idx].append(preslist[ind]) #Pt-1
+                                #  流域別のΔPt（IBT）
+                                IBT_deltaPt[idx].append(dp1list[ind]) #ΔPt
+                                #  流域別のΔPt（STORM）
+                                STORM_deltaPt[idx].append(expected[ind]) #ΔPt
+
+
+                            # 各グリッドの誤差の平均値、標準偏差を計算する
                             mu,std=norm.fit(Epres)
                             if abs(mu)<1 and c2>0: #otherwise: the fit didn't go as planned: large deviation from expected values..
                                 matrix_mean[i_ind,j_ind]=mu
@@ -562,7 +620,10 @@ def pressure_coefficients():
                                 matrix_c2[i_ind,j_ind]=c2
                                 matrix_c3[i_ind,j_ind]=c3
                         except RuntimeError:
+                            print("RuntimeError")
                             count=count+1
+
+            # RuntimeErrorの数をprintする
             print (str(count)+' fields out of '+str(len(latbins1)*len(lonbins1))+' bins do not have a fit')
             
             
@@ -591,7 +652,7 @@ def pressure_coefficients():
                                 matrix_c3[i,j]=matrix_c3[i0,j0]
                                 shadowmatrix[i,j]=1                     
                                 break
-            
+            # 周辺の値を埋める
             print('Filling succeeded')                 
             var=100
             (X,Y)=matrix_mpi.shape
@@ -616,3 +677,8 @@ def pressure_coefficients():
             
         output_file_path = os.path.join(output_dir, 'COEFFICIENTS_JM_PRESSURE.npy')
         np.save(output_file_path, coeflist)
+
+        np.save(os.path.join(output_dir, 'Epsilonlist.npy'), Epsilonlist)
+        np.save(os.path.join(output_dir, 'Pressurelist.npy'), Pressurelist)
+        np.save(os.path.join(output_dir, 'IBT_deltaPt.npy'), IBT_deltaPt)
+        np.save(os.path.join(output_dir, 'STORM_deltaPt.npy'), STORM_deltaPt)

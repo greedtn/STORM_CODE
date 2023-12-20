@@ -24,7 +24,7 @@ import preprocessing
 import coefficients
 import environmental
 # import genesis_matrix
-import genesis_matrix_python3  # python3対応のこちらに変更
+# import genesis_matrix_python3  # python3対応のこちらに変更
 import os
 import sys
 dir_path=os.path.dirname(os.path.realpath(sys.argv[0]))
