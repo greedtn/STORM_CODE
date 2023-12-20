@@ -133,5 +133,5 @@ dmypy.json
 *.nc
 *.npy
 # ファイルサイズが大きすぎる
-STORM_DATA_IBTRACS_EP_100_YEARS_0.txt
+*_YEARS_0.txt
 *.ipynb
