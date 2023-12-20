@@ -39,7 +39,7 @@ start_time=time.time()
 #==============================================================================
 #please set basin (EP,NA,NI,SI,SP,WP)
 basin='EP'
-loop=0 #ranges between 0 and 9 to simulate slices of 1000 years
+loop=10 #ranges between 0 and 9 to simulate slices of 1000 years
 
 total_years=100 #set the total number of years you'd like to simulate
 
