@@ -409,9 +409,15 @@ def PRESEXPECTED(dp,presmpi,a,b,c,d):
 
     """
     dp1_list=[]
+    first_term = []
+    second_term = []
+    third_term = []
     for k in range(len(dp)):
         dp1_list.append(a+b*dp[k]+c*np.exp(-d*presmpi[k]))
-    return dp1_list
+        first_term.append(a)
+        second_term.append(b*dp[k])
+        third_term.append(c*np.exp(-d*presmpi[k]))
+    return dp1_list, first_term, second_term, third_term
 
 def pressure_coefficients():
     """
@@ -437,6 +443,12 @@ def pressure_coefficients():
     IBT_deltaPt = {i:[] for i in range(0,6)}
     #  流域別のΔPt（STORM）
     STORM_deltaPt = {i:[] for i in range(0,6)}
+    # 流域別の第1項の値
+    First_term = {i:[] for i in range(0,6)}
+    # 流域別の第2項の値
+    Second_term = {i:[] for i in range(0,6)}
+    # 流域別の第3項の値
+    Third_term = {i:[] for i in range(0,6)}
 
     
     months=[[6,7,8,9,10,11],[6,7,8,9,10,11],[4,5,6,10,10,11],[1,2,3,4,11,12],[1,2,3,4,11,12],[5,6,7,8,9,10,11]]
@@ -482,7 +494,7 @@ def pressure_coefficients():
             df["latbin"]=df.Latitude.map(to_bin)
             df["lonbin"]=df.Longitude.map(to_bin)
             # 緯度経度5度5度ずつで、MPIのリストを格納
-            MPI=df.groupby(["latbin","lonbin"])['MPI'].apply(list)  
+            MPI=df.groupby(["latbin","lonbin"])['MPI'].apply(list)
             
             # 緯度経度の最小値〜最大値を5度刻みで分割
             latbins1=np.linspace(lat0,lat1-5,(lat1-5-lat0)//step+1)
@@ -591,10 +603,11 @@ def pressure_coefficients():
                             # Calculate the forward change in pressure (dp1, p[i+1]-p[i])
                             # dp1ではなく、dp0を渡すべきでは？
                             # expected=PRESEXPECTED(dp1list,presmpi_list,c0,c1,c2,c3)
-                            expected=PRESEXPECTED(dp0list,presmpi_list,c0,c1,c2,c3)
+                            expected, first_term, second_term, third_term=PRESEXPECTED(dp0list,presmpi_list,c0,c1,c2,c3)
 
                             # Epsilonを入れるリスト
                             Epres=[]
+
                             for ind in range(len(expected)):
                                 # ここはexpected[ind] - dp1list[ind] では？なぜdp"0"?
                                 # Epres.append(expected[ind]-dp0list[ind])
@@ -608,6 +621,10 @@ def pressure_coefficients():
                                 IBT_deltaPt[idx].append(dp1list[ind]) #ΔPt
                                 #  流域別のΔPt（STORM）
                                 STORM_deltaPt[idx].append(expected[ind]) #ΔPt
+                                # ΔPtの第1~3項
+                                First_term[idx].append(first_term[ind])
+                                Second_term[idx].append(second_term[ind])
+                                Third_term[idx].append(third_term[ind])
 
 
                             # 各グリッドの誤差の平均値、標準偏差を計算する
@@ -682,3 +699,6 @@ def pressure_coefficients():
         np.save(os.path.join(output_dir, 'Pressurelist.npy'), Pressurelist)
         np.save(os.path.join(output_dir, 'IBT_deltaPt.npy'), IBT_deltaPt)
         np.save(os.path.join(output_dir, 'STORM_deltaPt.npy'), STORM_deltaPt)
+        np.save(os.path.join(output_dir, 'First_term.npy'), First_term)
+        np.save(os.path.join(output_dir, 'Second_term.npy'), Second_term)
+        np.save(os.path.join(output_dir, 'Third_term.npy'), Third_term)
