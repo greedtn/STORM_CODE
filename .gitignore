@@ -134,3 +134,4 @@ dmypy.json
 *.npy
 # ファイルサイズが大きすぎる
 STORM_DATA_IBTRACS_EP_100_YEARS_0.txt
+*.ipynb
