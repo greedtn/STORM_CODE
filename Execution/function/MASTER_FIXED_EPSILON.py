@@ -19,7 +19,7 @@ from SELECT_BASIN import Basins_WMO
 
 from SAMPLE_STARTING_POINT import Startingpoint
 from SAMPLE_TC_MOVEMENT import TC_movement
-from SAMPLE_TC_PRESSURE import TC_pressure
+from SAMPLE_TC_PRESSURE import TC_pressure_epsilon_plus2
 
 import os
 import sys
@@ -39,9 +39,9 @@ start_time=time.time()
 #==============================================================================
 #please set basin (EP,NA,NI,SI,SP,WP)
 basin='WP'
-loop=1 #ranges between 0 and 9 to simulate slices of 1000 years
+loop=10 #ranges between 0 and 9 to simulate slices of 1000 years
 
-total_years=1000 #set the total number of years you'd like to simulate
+total_years=100 #set the total number of years you'd like to simulate
 
 TC_data=[] #This list is composed of: [year,storm number,lat,lon,pressure,wind,rmax,category,Holland B parameter,precipitation,landfall flag]
 #==============================================================================
@@ -62,7 +62,7 @@ for year in range(0,total_years):
             #==============================================================================
             latlist,lonlist,landfalllist=TC_movement(lon_genesis_list,lat_genesis_list,basin)
                     
-            TC_data=TC_pressure(basin,latlist,lonlist,landfalllist,year,storms_per_year,genesis_month,TC_data)
+            TC_data=TC_pressure_epsilon_plus2(basin,latlist,lonlist,landfalllist,year,storms_per_year,genesis_month,TC_data)
 
 TC_data=np.array(TC_data)
-np.savetxt(os.path.join(output_dir,'STORM_DATA_IBTRACS_'+str(basin)+'_'+str(total_years)+'_YEARS_'+str(loop)+'.txt'),TC_data,fmt='%5s',delimiter=',')
+np.savetxt(os.path.join(output_dir,'STORM_DATA_IBTRACS_'+str(basin)+'_'+str(total_years)+'_YEARS_'+str(loop)+ '_FIXED_EPSILON.txt'),TC_data,fmt='%5s',delimiter=',')
